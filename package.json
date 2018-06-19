@@ -1,0 +1,26 @@
+{
+  "name": "bcos-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "debug": "^3.1.0",
+    "ejs": "^2.4.2",
+    "express": "^4.14.0",
+    "express-session": "^1.14.0",
+    "ipfs-api": "^22.0.2",
+    "keccak": "^1.4.0",
+    "log4js": "^0.6.38",
+    "magic-globals": "^0.9.1",
+    "multer": "^1.3.0",
+    "rlp": "^2.0.0",
+    "secp256k1": "^3.5.0"
+  }
+}

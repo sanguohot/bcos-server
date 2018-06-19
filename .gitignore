@@ -1,0 +1,9 @@
+/.idea
+/node_modules
+/etc/config.js
+/etc/config_linux.js
+/sql/diff/*.sql
+/sql/bk/*.sql
+/temp/download.txt
+/web
+*.log
