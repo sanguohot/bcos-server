@@ -14,6 +14,7 @@ RUN apk update && apk add --update --no-cache --virtual .build-deps \
         libgcc \
         linux-headers \
         make \
+        git \
         python && \
 		npm install && \
 		apk del .build-deps

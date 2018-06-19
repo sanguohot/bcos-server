@@ -1,3 +1,4 @@
+const gprop = require('../etc/config').prop;
 let multer = require("multer");
 let wallet = require("./wallet");
 let storage = multer.memoryStorage();
@@ -59,7 +60,7 @@ function downloadFile(req, res) {
             message : fcode.CODE_ERR_PARAM.message
         });
     }
-    res.download("e:/evan/test.txt");
+    res.download(gprop.server_path+"/src/backend/data/test.txt");
 }
 
 function addSign(req, res) {
