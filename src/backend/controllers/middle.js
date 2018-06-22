@@ -1,13 +1,42 @@
 let fcode = require("./code");
+let user_bc = require("./users_bc");
+let files_bc = require("./files_bc");
+let util = require("./util");
 function addressCheck(req, res, next) {
-    console.log(req.headers.address);
-    if(!req.headers || !req.headers.address){
-        return res.status(fcode.CODE_ERR_PARAM.code).json({
-            code : fcode.CODE_ERR_PARAM.code,
-            message : fcode.CODE_ERR_PARAM.message
-        });
+    if(!req.headers && !req.params){
+        return util.resUtilError(res);
     }
-    next();
+    let address = req.headers.address || req.params.accountAddress;
+    if(!address){
+        return util.resUtilError(res, "缺少账户地址");
+    }
+    // 根据地址获取公钥 可能是异步的
+    user_bc.getPubkeyFromAddress(address,(err, pubkey) => {
+        if(err || !pubkey){
+            return util.resUtilError(res, err||"用户不存在");
+        }
+        req.headers.pubkey = pubkey;
+        next();
+    });
+}
+
+function fileHashCheck(req, res, next) {
+    if(!req.params || !req.params.fileHash){
+        return util.resUtilError(res, "缺少文件摘要");
+    }
+
+    // 根据文件hash获取签名者数量 可能是异步的
+    files_bc.getSignNumFromBlockChain(req.params.fileHash, function (err, fileSignSize) {
+        if(err){
+            return util.resUtilError(res, err || err.message);
+        }
+        if(!fileSignSize){
+            return util.resUtilError(res, "链上未找到文件");
+        }
+        req.headers.fileSignSize = fileSignSize;
+        next();
+    });
 }
 
 exports.addressCheck = addressCheck;
+exports.fileHashCheck = fileHashCheck;

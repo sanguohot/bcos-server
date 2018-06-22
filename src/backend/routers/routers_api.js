@@ -22,13 +22,13 @@ module.exports = function (router) {
     // 上传文件
     router.post("/files", middle.addressCheck, files.uploadFiles);
     // 下载文件
-    router.get("/files/:fileHash", middle.addressCheck, files.downloadFile);
+    router.get("/files/:fileHash", middle.addressCheck, middle.fileHashCheck, files.downloadFile);
     // 签名列表
-    router.get("/files/:fileHash/signers", middle.addressCheck, files.getSignList);
+    router.get("/files/:fileHash/signers", middle.addressCheck, middle.fileHashCheck, files.getSignList);
     // 文件签名
-    router.post("/files/:fileHash/signers", middle.addressCheck, files.addSign);
+    router.post("/files/:fileHash/signers", middle.addressCheck, middle.fileHashCheck, files.addSign);
     // 账号注册
     router.post("/accounts", users.addUser);
     // 账号删除
-    router.delete("/accounts/:accountAddress",users.delUser);
+    router.delete("/accounts/:accountAddress", middle.addressCheck, users.delUser);
 }

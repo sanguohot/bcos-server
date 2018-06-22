@@ -1,7 +1,7 @@
 const secp256k1 = require("secp256k1/elliptic");
 const createKeccakHash = require("keccak");
 const crypto = require('crypto');
-const rlp = require('rlp')
+const rlp = require('rlp');
 // 地址转换
 function toChecksumAddress(address) {
     address = address.toLowerCase().replace('0x', '');
@@ -49,7 +49,12 @@ function verify(msg,sign,pubkey) {
     return secp256k1.verify(rlphash(msg), Buffer.from(sign,"hex"), Buffer.from(pubkey,"hex"));
 }
 
+function verifyBuffer(msgBuffer,sign,pubkey) {
+    return secp256k1.verify(msgBuffer, Buffer.from(sign,"hex"), Buffer.from(pubkey,"hex"));
+}
+
 exports.createWallet = createWallet;
 exports.sign = sign;
 exports.verify = verify;
+exports.verifyBuffer = verifyBuffer;
 exports.rlphash = rlphash;
