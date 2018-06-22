@@ -8,6 +8,16 @@ function getDataForCns(contractName, contractVersion, contractFunction, contract
     }
 }
 
+function isValidAddress(address) {
+    if(!address || address.length!=42){
+        return false;
+    }
+    if(address.indexOf("0x")<0){
+        return false;
+    }
+    return true;
+}
+
 function resUtilError(res, msg) {
     res.status(fcode.CODE_ERR_PARAM.code).json({
         code : fcode.CODE_ERR_PARAM.code,
@@ -16,3 +26,4 @@ function resUtilError(res, msg) {
 }
 exports.getDataForCns = getDataForCns;
 exports.resUtilError = resUtilError;
+exports.isValidAddress = isValidAddress;

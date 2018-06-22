@@ -19,6 +19,18 @@ function getUserBasicFromAddress(address, cb) {
     })
 }
 
+function getAddressByIdCartNoOnBlockChain(idCartNo, cb) {
+    let data = util.getDataForCns("UsersData", "v1", "getAddressByIdCartNo", [idCartNo]);
+    web3post.post(data.method,data.params).then(result => {
+        if(!result || result[0]==0){
+            return cb(0, null);
+        }
+        cb(0, result[0]);
+    }).catch(err => {
+        cb(err);
+    })
+}
+
 function getPubkeyFromAddress(address, cb) {
     getUserBasicFromAddress(address, function (err, basic) {
         if(err){
@@ -41,7 +53,13 @@ function addUserToBlockChain(address, pubkey, idCartNo, desc, cb){
         },
         function(basic, cb) {
             if(basic){
-                return cb("用户已存在，无法添加");
+                return cb("用户已存在，无法重复添加");
+            }
+            getAddressByIdCartNoOnBlockChain(idCartNo, cb);
+        },
+        function(address02, cb) {
+            if(address02){
+                return cb(idCartNo+"已存在，无法重复添加");
             }
             web3sync.sendRawTransactionByNameService(null, null, "UsersData", "addUser", "v1", [address, pubkey, idCartNo, desc]).then(result => {
                 // web3post.post(data.method,data.params).then(result => {

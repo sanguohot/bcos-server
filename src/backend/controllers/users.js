@@ -16,7 +16,7 @@ function addUser(req, res) {
     // 注册用户到链上
     users_bc.addUserToBlockChain(walletObj.addressHex, walletObj.pubkeyHex, req.body.idCartNo, req.body.desc, (err, userId) => {
         if(err){
-            return util.resUtilError(res);
+            return util.resUtilError(res, err.message || err);
         }
 
         let ret = {};
@@ -54,7 +54,7 @@ function delUser(req, res) {
     users_bc.delUserFromBlockChain(address, (err) => {
         if(err){
             console.error(err);
-            return util.resUtilError(res);
+            return util.resUtilError(res, err.message || err);
         }
         let srcPath = gprop.server_path+'/backup/'+address;
         let dstPath = gprop.server_path+'/backup/'+address+"-deleted";

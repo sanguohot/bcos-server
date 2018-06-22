@@ -11,6 +11,7 @@ contract UsersData is ContractBase("v1") {
     }
 
     mapping(address=>Users) usersMap;
+    mapping(string=>address) addressMap;
 
     event onAddUser(address from,address to,address accountAddress,string publicKey,string idCartNo,string detail);
     event onSetUserDetail(address from,address to,address accountAddress,string detail);
@@ -19,6 +20,10 @@ contract UsersData is ContractBase("v1") {
 
     function UsersData() public {
         owner = msg.sender;
+    }
+
+    function getAddressByIdCartNo(string idCartNo) public constant returns (address accountAddress){
+        return addressMap[idCartNo];
     }
 
     function getUserAll(address userId) public constant returns (bool active,address accountAddress,string publicKey,string idCartNo,string detail) {
@@ -58,6 +63,9 @@ contract UsersData is ContractBase("v1") {
         if(accountAddress == 0){
             return 0;
         }
+        if(addressMap[idCartNo] != 0){
+            return 0;
+        }
         bytes memory publicKeyBytes = bytes(publicKey);
         if(publicKeyBytes.length == 0){
             return 0;
@@ -67,6 +75,7 @@ contract UsersData is ContractBase("v1") {
             return 0;
         }
         usersMap[userId] = Users(true,accountAddress,publicKey,idCartNo,detail);
+        addressMap[idCartNo] = accountAddress;
         onAddUser(
             msg.sender,
             owner,
@@ -88,10 +97,12 @@ contract UsersData is ContractBase("v1") {
     }
 
     function delUser(address userId) public returns (bool succ){
-        if (!usersMap[userId].active) {
+        Users memory u = usersMap[userId];
+        if (!u.active) {
             return false;
         }
         usersMap[userId].active = false;
+        addressMap[u.idCartNo] = 0;
         onDelUser(
             msg.sender,
             owner,

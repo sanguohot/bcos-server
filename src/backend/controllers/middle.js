@@ -10,10 +10,13 @@ function addressCheck(req, res, next) {
     if(!address){
         return util.resUtilError(res, "缺少账户地址");
     }
+    if(!util.isValidAddress(address)){
+        return util.resUtilError(res, "账户地址非法");
+    }
     // 根据地址获取公钥 可能是异步的
     user_bc.getPubkeyFromAddress(address,(err, pubkey) => {
         if(err || !pubkey){
-            return util.resUtilError(res, err||"用户不存在");
+            return util.resUtilError(res, err.message || err);
         }
         req.headers.pubkey = pubkey;
         next();
@@ -28,7 +31,7 @@ function fileHashCheck(req, res, next) {
     // 根据文件hash获取签名者数量 可能是异步的
     files_bc.getSignNumFromBlockChain(req.params.fileHash, function (err, fileSignSize) {
         if(err){
-            return util.resUtilError(res, err || err.message);
+            return util.resUtilError(res, err.message || err);
         }
         if(!fileSignSize){
             return util.resUtilError(res, "链上未找到文件");

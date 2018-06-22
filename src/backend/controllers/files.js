@@ -53,7 +53,7 @@ function uploadFiles(req, res) {
         ], function (err, result) {
             // result now equals 'done'
             if(err){
-                return util.resUtilError(res, err || err.message);
+                return util.resUtilError(res, err.message || err);
             }
             let ret = {};
             ret.fileHash = fileHashHex;
@@ -84,7 +84,7 @@ function downloadFile(req, res) {
     ], function (err, fileContent) {
         // result now equals 'done'
         if(err){
-            return util.resUtilError(res, err||err.message);
+            return util.resUtilError(res, err.message || err);
         }
         var fileBuffer = Buffer.from(fileContent);
 
@@ -113,7 +113,7 @@ function addSign(req, res) {
     // 发送签名上链
     files_bc.addSignToBlockChain(req.params.fileHash, req.headers.address, req.body.sign, (err) => {
         if(err){
-            return util.resUtilError(res, err||err.message);
+            return util.resUtilError(res, err.message || err);
         }
         let ret = {};
         ret.code = 0;
@@ -142,7 +142,7 @@ function getSignList(req, res) {
             // 这里从区块链上循环获取签名地址，最大循环数量为req.headers.fileSignSize
             files_bc.getFileSignerAddressListFromBlockChain(req.params.fileHash, req.headers.fileSignSize, (err, list) => {
                 if(err){
-                    return util.resUtilError(res, err||err.message);
+                    return util.resUtilError(res, err.message || err);
                 }
                 cb(0, list);
             })
@@ -150,7 +150,7 @@ function getSignList(req, res) {
     ], function (err, list) {
         // result now equals 'done'
         if(err){
-            return util.resUtilError(res, err || err.message);
+            return util.resUtilError(res, err.message || err);
         }
         let ret = {};
         ret.signers = list;
