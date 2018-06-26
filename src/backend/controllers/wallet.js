@@ -41,20 +41,22 @@ function rlphash(a) {
 }
 
 function sign(msg,prikey) {
+    msg = Buffer.from(msg);
     let sigObj = secp256k1.sign(rlphash(msg), Buffer.from(prikey,"hex"));
     return sigObj.signature.toString("hex");
 }
 
 function verify(msg,sign,pubkey) {
+    msg = Buffer.from(msg);
     return secp256k1.verify(rlphash(msg), Buffer.from(sign,"hex"), Buffer.from(pubkey,"hex"));
 }
 
-function verifyBuffer(msgBuffer,sign,pubkey) {
+function verifyRlpHashBuffer(msgBuffer,sign,pubkey) {
     return secp256k1.verify(msgBuffer, Buffer.from(sign,"hex"), Buffer.from(pubkey,"hex"));
 }
 
 exports.createWallet = createWallet;
 exports.sign = sign;
 exports.verify = verify;
-exports.verifyBuffer = verifyBuffer;
+exports.verifyRlpHashBuffer = verifyRlpHashBuffer;
 exports.rlphash = rlphash;

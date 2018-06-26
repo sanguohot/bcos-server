@@ -37,7 +37,7 @@ function uploadFiles(req, res) {
         let fileHashHex = fileHashBuffer.toString("hex");
         console.log(fileHashHex,fileHashHex.length);
         // 可能是异步的 考虑async
-        let isOk = wallet.verifyBuffer(fileHashBuffer, req.body.sign, req.headers.pubkey);
+        let isOk = wallet.verifyRlpHashBuffer(fileHashBuffer, req.body.sign, req.headers.pubkey);
         if(!isOk){
             return util.resUtilError(res,"签名校验失败");
         }
