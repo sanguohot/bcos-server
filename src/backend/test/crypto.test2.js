@@ -8,11 +8,11 @@ const jschardet = require("jschardet");
 let helloStr = "hello";
 let helloBuf = Buffer.from(helloStr);
 console.log(fileType(helloBuf))
-let fileBuf = fs.readFileSync("E:/evan/文件上传的写法.txt");
+let fileBuf = fs.readFileSync("E:/evan/node.png");
 let content = fileBuf.toString("binary");
 let encryptContent = crypto.encryptByVersion(content);
 let decryptContent = crypto.decryptByVersion(encryptContent);
-console.log("原始数据",fileBuf, jschardet.detect(fileBuf),fileBuf.length,content.length, fileType(fileBuf));
+console.log("原始数据",jschardet.detect(fileBuf),fileBuf.length,content.length, fileType(fileBuf));
 console.log(Buffer.from(content, "binary"));
 console.log("加密数据",encryptContent);
 let encoding =jschardet.detect(decryptContent).encoding;

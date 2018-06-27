@@ -10,7 +10,6 @@ let fcode = require("./code");
 let util = require("./util");
 let files_bc = require("./files_bc");
 let files_ipfs = require("./files_ipfs");
-const iconv = require('iconv-lite');
 const jschardet = require("jschardet");
 const MAX_SIGN_SIZE = 3;
 
@@ -90,24 +89,22 @@ function downloadFile(req, res) {
         if(err){
             return util.resUtilError(res, err.message || err);
         }
-        // let encoding =jschardet.detect(fileContent).encoding;
-        // console.log("数据原始编码", encoding);
-        // let encodingForIconv = getEncodingForIconv(encoding);
-        // let fileBuffer = null;
-        // if(encodingForIconv != "binary"){
-        //     fileBuffer = Buffer.from(iconv.decode(fileContent, encodingForIconv), "utf8");
-        // }else{
-        //     fileBuffer = Buffer.from(fileContent, "binary");
-        // }
+        let encoding =jschardet.detect(fileContent).encoding;
+        console.log("数据编码", encoding);
+        console.log("数据长度", fileContent.length);
         let fileBuffer = Buffer.from(fileContent, "binary");
+        let charset = encoding;
         let type = fileType(fileBuffer);
-        console.info(req.params.fileHash, "fileType", type);
+        console.info(req.params.fileHash, "文件类型为", type);
         let fileName = req.params.fileHash;
-        let contentType = "text/plain";
+        // let contentType = "text/plain";
+        // 默认设置为二进制流
+        let contentType = "application/octet-stream";
         if(type){
             if(type.ext){
                 fileName = req.params.fileHash+"."+type.ext;
             }
+            // 也许是已知的格式，比如说图片
             if(type.mime){
                 contentType = type.mime;
             }
@@ -116,7 +113,8 @@ function downloadFile(req, res) {
         let readStream = new stream.PassThrough();
         readStream.end(fileBuffer);
         res.set('Content-disposition', 'attachment; filename=' + fileName);
-        res.set('Content-Type', contentType);
+        res.set('Content-Type', contentType+";Charset="+charset);
+        res.set('Content-Length', fileBuffer.length);
         readStream.pipe(res);
     });
 }
@@ -183,19 +181,6 @@ function getSignList(req, res) {
         ret.message = fcode.CODE_SUCC.message;
         res.json(ret);
     });
-}
-
-
-function getEncodingForIconv(encoding) {
-    let encodingMap = {
-        "UTF-8" : "utf8",
-        "GB2312" : "gbk",
-        "DEFAULT" : "binary"
-    };
-    if(!encoding || !encodingMap[encoding]){
-        return encodingMap["DEFAULT"];
-    }
-    return encodingMap[encoding];
 }
 
 exports.uploadFiles = uploadFiles;
