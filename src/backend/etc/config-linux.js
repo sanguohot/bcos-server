@@ -1,6 +1,6 @@
 exports.prop = {
     "web_port": 443,
-    "https":true,
+    "https":false,
     "https_path":"/opt/bcos-server/src/backend/key",
     "key":"privkey.pem",
     "cert":"fullchain.pem",
