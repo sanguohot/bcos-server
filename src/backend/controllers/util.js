@@ -19,7 +19,7 @@ function isValidAddress(address) {
 }
 
 function resUtilError(res, msg) {
-    res.status(fcode.CODE_ERR_PARAM.code).json({
+    res.status(200).json({
         code : fcode.CODE_ERR_PARAM.code,
         message : msg || fcode.CODE_ERR_PARAM.message
     });
