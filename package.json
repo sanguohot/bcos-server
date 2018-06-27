@@ -16,6 +16,7 @@
     "ejs": "^2.4.2",
     "express": "^4.14.0",
     "express-session": "^1.14.0",
+    "file-type": "^8.0.0",
     "fs-extra": "^6.0.1",
     "iconv-lite": "^0.4.23",
     "ipfs-api": "^22.1.0",

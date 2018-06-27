@@ -1,21 +1,7 @@
 let ipfsAPI = require('ipfs-api');
 let crypto = require('../controllers/crypto');
-const iconv = require('iconv-lite');
-const jschardet = require("jschardet");
 // connect to ipfs daemon API server
 let ipfs = ipfsAPI('10.6.250.50', '5001', {protocol: 'http'});
-
-function getEncodingForIconv(encoding) {
-    let encodingMap = {
-        "UTF-8" : "utf8",
-        "GB2312" : "gbk",
-        "DEFAULT" : "binary"
-    };
-    if(!encoding || !encodingMap[encoding]){
-        return encodingMap["DEFAULT"];
-    }
-    return encodingMap[encoding];
-}
 
 function addFileToIpfs(file, cb) {
     if(!file || !file.buffer || !file.size || !file.buffer.length){
@@ -69,10 +55,7 @@ function getFileFromIpfs(ipfsHash, cb) {
         let decryptContent = null;
         try {
             decryptContent = crypto.decryptByVersion(encryptContent);
-            let encoding =jschardet.detect(decryptContent).encoding;
-            console.log("数据原始编码", encoding);
-            decryptContent = iconv.decode(decryptContent,getEncodingForIconv(encoding));
-            console.log("获得解密的数据", decryptContent);
+            // console.log("获得解密的数据", decryptContent);
             return cb(0, decryptContent);
         }catch (e){
             console.error(e);

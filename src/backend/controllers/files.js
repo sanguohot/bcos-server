@@ -4,11 +4,14 @@ let multer = require("multer");
 let stream = require("stream");
 let async = require("async");
 let wallet = require("./wallet");
+let fileType = require('file-type');
 let storage = multer.memoryStorage();
 let fcode = require("./code");
 let util = require("./util");
 let files_bc = require("./files_bc");
 let files_ipfs = require("./files_ipfs");
+const iconv = require('iconv-lite');
+const jschardet = require("jschardet");
 const MAX_SIGN_SIZE = 3;
 
 let upload = multer({
@@ -87,12 +90,33 @@ function downloadFile(req, res) {
         if(err){
             return util.resUtilError(res, err.message || err);
         }
-        var fileBuffer = Buffer.from(fileContent);
+        // let encoding =jschardet.detect(fileContent).encoding;
+        // console.log("数据原始编码", encoding);
+        // let encodingForIconv = getEncodingForIconv(encoding);
+        // let fileBuffer = null;
+        // if(encodingForIconv != "binary"){
+        //     fileBuffer = Buffer.from(iconv.decode(fileContent, encodingForIconv), "utf8");
+        // }else{
+        //     fileBuffer = Buffer.from(fileContent, "binary");
+        // }
+        let fileBuffer = Buffer.from(fileContent, "binary");
+        let type = fileType(fileBuffer);
+        console.info(req.params.fileHash, "fileType", type);
+        let fileName = req.params.fileHash;
+        let contentType = "text/plain";
+        if(type){
+            if(type.ext){
+                fileName = req.params.fileHash+"."+type.ext;
+            }
+            if(type.mime){
+                contentType = type.mime;
+            }
+        }
 
-        var readStream = new stream.PassThrough();
+        let readStream = new stream.PassThrough();
         readStream.end(fileBuffer);
-        res.set('Content-disposition', 'attachment; filename=' + req.params.fileHash);
-        res.set('Content-Type', 'text/plain');
+        res.set('Content-disposition', 'attachment; filename=' + fileName);
+        res.set('Content-Type', contentType);
         readStream.pipe(res);
     });
 }
@@ -160,6 +184,20 @@ function getSignList(req, res) {
         res.json(ret);
     });
 }
+
+
+function getEncodingForIconv(encoding) {
+    let encodingMap = {
+        "UTF-8" : "utf8",
+        "GB2312" : "gbk",
+        "DEFAULT" : "binary"
+    };
+    if(!encoding || !encodingMap[encoding]){
+        return encodingMap["DEFAULT"];
+    }
+    return encodingMap[encoding];
+}
+
 exports.uploadFiles = uploadFiles;
 exports.downloadFile = downloadFile;
 exports.addSign = addSign;
