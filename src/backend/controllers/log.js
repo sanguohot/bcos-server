@@ -1,4 +1,5 @@
-var gprop = require('../etc/config').prop;
+const os = require("os");
+const gprop = require('../etc/'+(os.platform()=="linux"?"config-linux":"config")).prop;
 var log4js = require('log4js');
 var filename= __filename.split(gprop.file_split).pop();
 var LOG_CONTENT_LEN=384;

@@ -24,6 +24,7 @@ function resUtilError(res, msg) {
         message : msg || fcode.CODE_ERR_PARAM.message
     });
 }
+
 exports.getDataForCns = getDataForCns;
 exports.resUtilError = resUtilError;
 exports.isValidAddress = isValidAddress;

@@ -18,5 +18,5 @@ RUN apk update && apk add --update --no-cache --virtual .build-deps \
         python && \
 		npm install && \
 		apk del .build-deps
-EXPOSE 443
+EXPOSE 2443
 CMD [ "/bin/sh","-c","node src/backend/bin/start_cluster.js" ]

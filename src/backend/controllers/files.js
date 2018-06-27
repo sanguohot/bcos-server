@@ -1,4 +1,5 @@
-const gprop = require('../etc/config').prop;
+const os = require("os");
+const gprop = require('../etc/'+(os.platform()=="linux"?"config-linux":"config")).prop;
 let multer = require("multer");
 let stream = require("stream");
 let async = require("async");

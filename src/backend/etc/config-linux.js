@@ -1,5 +1,5 @@
 exports.prop = {
-    "web_port": 443,
+    "web_port": 2443,
     "https":false,
     "https_path":"/opt/bcos-server/src/backend/key",
     "key":"privkey.pem",

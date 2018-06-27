@@ -6,5 +6,5 @@ docker run -it -d --name bcos-server \
 -v ${BACKEND_PATH}/etc:${BACKEND_PATH}/etc \
 -v ${SERVER_PATH}/backup:${SERVER_PATH}/backup \
 -v /etc/letsencrypt/:/etc/letsencrypt \
--p 443:443 \
+-p 2443:2443 \
 ${IMG_TAG}

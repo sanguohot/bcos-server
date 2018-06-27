@@ -1,7 +1,8 @@
 /**
  * Created by evan on 2016/06/01.
  */
-const gprop = require('../etc/config').prop;
+const os = require("os");
+const gprop = require('../etc/'+(os.platform()=="linux"?"config-linux":"config")).prop;
 const http = require('http');
 const https = require('https');
 const fs = require("fs");
@@ -25,7 +26,7 @@ function start(){
         onError(err,port);
     });
     server.on('listening', function(){
-        onListening(server,"http");
+        onListening(server,gprop.https?"https":"http");
     });
 
     /**
@@ -64,7 +65,7 @@ function start(){
         var bind = typeof addr === 'string'
             ? 'pipe ' + addr
             : 'port ' + addr.port;
-        console.log('['+type+'] '+'listening on ' + bind);
+        console.log(process.pid,'['+type+'] '+'listening on ' + bind);
     }
 }
 module.exports=start;
