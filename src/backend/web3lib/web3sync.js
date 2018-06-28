@@ -14,6 +14,7 @@ const BN = require('bn.js')
 const fs=require('fs');
 const execSync =require('child_process').execSync;
 const coder = require('./codeUtils');
+const util = require('../controllers/util');
 var config=require('./config');
 
 /*
@@ -766,21 +767,22 @@ async function sendRawTransactionByNameService(account, privateKey, contract, fu
 	var signTX = signTransaction(postdata, privateKey, null);
 
 	return new Promise((resolve, reject) => {
+        console.info("发送交易", util.getInvokeMethod(null, namecallparams), "<===", params);
 		web3.eth.sendRawTransaction(signTX, function(err, address) {
 			if (!err) {
-				console.log("send transaction success: " + address);
-
+                console.info("交易完成", util.getInvokeMethod(null, namecallparams), "===>", address);
 				checkForTransactionResult(address, (err, receipt) => {
 				    if(err){
-				      return reject(err);
+                        console.error("交易失败", util.getInvokeMethod(null, namecallparams), "===>", err.message || err);
+				        return reject(err);
                     }
+                    console.info("交易成功", util.getInvokeMethod(null, namecallparams), "===>", receipt);
 					resolve(receipt);
 				});
 				//resolve(address);
 			}
 			else {
-			    console.log("send transaction failed！",err);
-
+                console.error("交易失败", util.getInvokeMethod(null, namecallparams), "===>", err.message || err);
 				return reject(err);
 			}
 		});

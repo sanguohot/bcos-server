@@ -63,10 +63,8 @@ function addUserToBlockChain(address, pubkey, idCartNo, desc, cb){
             }
             web3sync.sendRawTransactionByNameService(null, null, "UsersData", "addUser", "v1", [address, pubkey, idCartNo, desc]).then(result => {
                 // web3post.post(data.method,data.params).then(result => {
-                console.log("交易成功",result);
                 cb(0, result);
             }).catch(err => {
-                console.error("交易失败", err);
                 cb(err);
             })
         }
@@ -83,10 +81,8 @@ function delUserFromBlockChain(address, cb){
     // 前面中间件已经检查了用户是否存在，到了这里用户必然存在
     web3sync.sendRawTransactionByNameService(null, null, "UsersData", "delUser", "v1", [address]).then(result => {
         // web3post.post(data.method,data.params).then(result => {
-        console.log("交易成功",result);
         cb(0, result);
     }).catch(err => {
-        console.error("交易失败", err);
         cb(err);
     })
 }

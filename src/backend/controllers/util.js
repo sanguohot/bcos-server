@@ -7,7 +7,27 @@ function getDataForCns(contractName, contractVersion, contractFunction, contract
         "id":1
     }
 }
+function getInvokeMethod(params, obj) {
+    if(!obj && !params){
+        return "";
+    }
+    if(!obj){
+        obj = params[0].data;
+    }
 
+    return obj.contract+":"+obj.version+"."+obj.func;
+}
+
+function getInvokeParams(params, obj) {
+    if(!obj && !params){
+        return "";
+    }
+    if(!obj){
+        obj = params[0].data;
+    }
+
+    return obj.params;
+}
 function isValidAddress(address) {
     if(!address || address.length!=42){
         return false;
@@ -37,3 +57,5 @@ exports.getDataForCns = getDataForCns;
 exports.resUtilError = resUtilError;
 exports.isValidAddress = isValidAddress;
 exports.isVailidSign = isVailidSign;
+exports.getInvokeMethod = getInvokeMethod;
+exports.getInvokeParams = getInvokeParams;

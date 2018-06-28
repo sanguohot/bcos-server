@@ -21,7 +21,6 @@ function isAccountAddressExistOnBlockChain(fileHash, address, cb) {
         return cb("参数错误");
     }
     let data = util.getDataForCns("FilesData", "v1", "isAccountAddressExist", [fileHash, address]);
-    console.log("发送请求","isAccountAddressExist",[fileHash, address]);
     web3post.post(data.method,data.params).then(result => {
         if(!result || !result[0]){
             return cb(0, false);
@@ -38,7 +37,6 @@ function getFileBasicFromBlockChain(fileHash, cb) {
         return cb("参数错误");
     }
     let data = util.getDataForCns("FilesData", "v1", "getFileBasic", [fileHash]);
-    console.log("发送请求","getFileBasic",[fileHash]);
     web3post.post(data.method,data.params).then(result => {
         if(!result || result[0]==0 || !result[1] || !result[2] || !result[3] || !result[4]){
             return cb(0, null);
@@ -125,10 +123,8 @@ function addSignToBlockChain(fileHash, address, sign, cb) {
         function (cb) {
             web3sync.sendRawTransactionByNameService(null, null, "FilesData", "addFileSigner", "v1", [fileHash, address, sign]).then(result => {
                 // web3post.post(data.method,data.params).then(result => {
-                console.log("交易成功",result);
                 cb(0, result);
             }).catch(err => {
-                console.error("交易失败", err);
                 cb(err);
             })
         }
@@ -156,10 +152,8 @@ function addFileToBlockChain(address, sign, fileHash, ipfsHash, fileSize, detail
             }
             web3sync.sendRawTransactionByNameService(null, null, "FilesData", "addFile", "v1", [address, sign, fileHash, ipfsHash, fileSize, detail]).then(result => {
                 // web3post.post(data.method,data.params).then(result => {
-                console.log("交易成功",result);
                 cb(0, result);
             }).catch(err => {
-                console.error("交易失败", err);
                 cb(err);
             })
         }

@@ -15,10 +15,8 @@ if (typeof web3 !== 'undefined') {
 }
 
 
-var http = require('http');  
-  
- 
-
+var http = require('http');
+let util = require('../controllers/util');
 
 
 async function post(method,params) {
@@ -44,8 +42,8 @@ async function post(method,params) {
           headers: {  
               'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'  
           }  
-      };  
-      
+      };
+      console.info("发送请求", util.getInvokeMethod(params), "<===", util.getInvokeParams(params));
       var response="";
       var req = http.request(options, function (res) {  
           //console.log('STATUS: ' + res.statusCode);  
@@ -57,7 +55,7 @@ async function post(method,params) {
               response+=chunk;
           });  
           res.on('end', function (chunk) {
-              console.info("请求完成", method, "===>", response);
+              console.info("请求完成", util.getInvokeMethod(params), "===>", response);
               let responseObj = JSON.parse(response);
               if(responseObj.error){
                   return reject(responseObj.error);
@@ -70,7 +68,7 @@ async function post(method,params) {
       });  
         
       req.on('error', function (e) {  
-          console.error('请求错误', method, "===>", e.message);
+          console.error('请求错误', util.getInvokeMethod(params), "===>", e.message);
           reject(response);
       });  
         
