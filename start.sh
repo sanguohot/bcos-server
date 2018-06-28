@@ -1,4 +1,4 @@
-IMG_TAG=sanguohot/bcos-server:3.5
+IMG_TAG=sanguohot/bcos-server:3.6
 SERVER_PATH=/opt/bcos-server
 BACKEND_PATH=/opt/bcos-server/src/backend/
 docker run -it -d --name bcos-server \

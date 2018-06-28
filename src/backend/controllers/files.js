@@ -158,7 +158,9 @@ function getSignList(req, res) {
         },
         function (isExist, cb) {
             if(!isExist){
-                return cb("非文件所有者或者签名者无法访问");
+                console.warn("非文件所有者签名者访问签名列表", req.headers.address, "===>", req.params.fileHash);
+                // 这里因为业务有需求先放开限制
+                // return cb("非文件所有者或者签名者无法访问");
             }
             // 这里从区块链上循环获取签名地址，最大循环数量为req.headers.fileSignSize
             files_bc.getFileSignerAddressListFromBlockChain(req.params.fileHash, req.headers.fileSignSize, (err, list) => {

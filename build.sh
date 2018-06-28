@@ -1,5 +1,5 @@
 #!/bin/bash
-IMG_TAG=sanguohot/bcos-server:3.5
+IMG_TAG=sanguohot/bcos-server:3.6
 #docker build . -t ${DRP_TAG}
 #docker push ${DRP_TAG}
 from_path=$PWD
