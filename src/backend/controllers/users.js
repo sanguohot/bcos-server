@@ -12,6 +12,9 @@ function addUser(req, res) {
     if(!req.body || !req.body.idCartNo){
         return util.resUtilError(res);
     }
+    if(req.body.desc && req.body.desc.length>255){
+        return util.resUtilError(res, "描述字段过长");
+    }
     let walletObj = wallet.createWallet();
     // 注册用户到链上
     users_bc.addUserToBlockChain(walletObj.addressHex, walletObj.pubkeyHex, req.body.idCartNo, req.body.desc, (err, userId) => {
@@ -36,18 +39,16 @@ function addUser(req, res) {
     let encryptData = crypto.encryptByVersion(JSON.stringify(walletObj));
     fs.writeFile(filePath, encryptData, (err) => {
         if (err) throw err;
-        console.log('The file has been saved!');
+        console.log(filePath, 'The file has been saved!');
     });
 }
 
 function delUser(req, res) {
     console.info(req.params,req.body);
-    if(!req.body || !req.body.sign){
-        return util.resUtilError(res);
-    }
+    let sign = req.body.sign || req.query.sign;
     let address = req.headers.address || req.params.accountAddress;
     // 校验签名 可能是异步的 考虑async
-    let isOk = wallet.verify(address, req.body.sign, req.headers.pubkey);
+    let isOk = wallet.verify(address, sign, req.headers.pubkey);
     if(!isOk){
         return util.resUtilError(res, "签名校验失败！");
     }

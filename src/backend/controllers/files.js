@@ -26,23 +26,24 @@ function uploadFiles(req, res) {
     upload(req, res, function (err) {
         if (err) {
             // An error occurred when uploading
-            return util.resUtilError(res, "请求中未发现文件");
+            return util.resUtilError(res, err.message || err);
         }
         if(!req.file || !req.file.size || !req.file.buffer || !req.file.buffer.length){
-            return util.resUtilError(res, "请求中未发现文件");
+            return util.resUtilError(res, "未发现文件");
         }
         console.log(req.file,req.body);
-        if(!req.body || !req.body.sign){
-            return util.resUtilError(res);
+        let sign = req.body.sign || req.query.sign;
+        if(req.body.desc && req.body.desc.length>127){
+            return util.resUtilError(res, "描述字段过长");
         }
         // Everything went fine
         let fileHashBuffer = wallet.rlphash(req.file.buffer);
         let fileHashHex = fileHashBuffer.toString("hex");
         console.log(fileHashHex,fileHashHex.length);
         // 可能是异步的 考虑async
-        let isOk = wallet.verifyRlpHashBuffer(fileHashBuffer, req.body.sign, req.headers.pubkey);
+        let isOk = wallet.verifyRlpHashBuffer(fileHashBuffer, sign, req.headers.pubkey);
         if(!isOk){
-            return util.resUtilError(res,"签名校验失败");
+            return util.resUtilError(res, "签名校验失败");
         }
         // 可能是异步的 考虑async
 
@@ -51,7 +52,7 @@ function uploadFiles(req, res) {
                 files_ipfs.addFileToIpfs(req.file, cb);
             },
             function(ipfsHash, cb) {
-                files_bc.addFileToBlockChain(req.headers.address, req.body.sign, fileHashHex, ipfsHash, req.file.size, req.body.desc, cb);
+                files_bc.addFileToBlockChain(req.headers.address, sign, fileHashHex, ipfsHash, req.file.size, req.body.desc, cb);
             }
         ], function (err, result) {
             // result now equals 'done'
@@ -69,11 +70,9 @@ function uploadFiles(req, res) {
 
 function downloadFile(req, res) {
     console.info(req.params,req.query);
-    if(!req.query || !req.query.sign){
-        return util.resUtilError(res, "参数错误");
-    }
+    let sign = req.body.sign || req.query.sign;
     // 可能是异步的 考虑async
-    let isOk = wallet.verify(req.params.fileHash, req.query.sign, req.headers.pubkey);
+    let isOk = wallet.verify(req.params.fileHash, sign, req.headers.pubkey);
     if(!isOk){
         return util.resUtilError(res, "签名校验失败");
     }
@@ -121,11 +120,9 @@ function downloadFile(req, res) {
 
 function addSign(req, res) {
     console.info(req.params,req.body);
-    if(!req.body || !req.body.sign){
-        return util.resUtilError(res);
-    }
+    let sign = req.body.sign || req.query.sign;
 
-    let isOk = wallet.verify(req.params.fileHash, req.body.sign, req.headers.pubkey);
+    let isOk = wallet.verify(req.params.fileHash, sign, req.headers.pubkey);
     if(!isOk){
         return util.resUtilError(res, "签名校验失败");
     }
@@ -134,7 +131,7 @@ function addSign(req, res) {
         return util.resUtilError(res);
     }
     // 发送签名上链
-    files_bc.addSignToBlockChain(req.params.fileHash, req.headers.address, req.body.sign, (err) => {
+    files_bc.addSignToBlockChain(req.params.fileHash, req.headers.address, sign, (err) => {
         if(err){
             return util.resUtilError(res, err.message || err);
         }
@@ -147,10 +144,8 @@ function addSign(req, res) {
 
 function getSignList(req, res) {
     console.info(req.params,req.query);
-    if(!req.query || !req.query.sign){
-        return util.resUtilError(res, "参数错误");
-    }
-    let isOk = wallet.verify(req.params.fileHash, req.query.sign, req.headers.pubkey);
+    let sign = req.body.sign || req.query.sign;
+    let isOk = wallet.verify(req.params.fileHash, sign, req.headers.pubkey);
     if(!isOk){
         return util.resUtilError(res, "签名校验失败");
     }

@@ -27,7 +27,9 @@ function fileHashCheck(req, res, next) {
     if(!req.params || !req.params.fileHash){
         return util.resUtilError(res, "缺少文件摘要");
     }
-
+    if(req.params.fileHash.length != 64){
+        return util.resUtilError(res, "文件摘要长度错误");
+    }
     // 根据文件hash获取签名者数量 可能是异步的
     files_bc.getSignNumFromBlockChain(req.params.fileHash, function (err, fileSignSize) {
         if(err){
@@ -41,5 +43,16 @@ function fileHashCheck(req, res, next) {
     });
 }
 
+function signCheck(req, res, next) {
+    let sign = req.body.sign || req.query.sign;
+    if(!sign){
+        return util.resUtilError(res, "缺少签名参数");
+    }
+    if(sign.length != 128){
+        return util.resUtilError(res, "签名长度错误");
+    }
+    next();
+}
 exports.addressCheck = addressCheck;
 exports.fileHashCheck = fileHashCheck;
+exports.signCheck = signCheck;
