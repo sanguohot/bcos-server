@@ -32,7 +32,6 @@ function uploadFiles(req, res) {
             return util.resUtilError(res, "未发现文件");
         }
         console.log(req.file,req.body);
-        let sign = req.body.sign || req.query.sign;
         if(req.body.desc && req.body.desc.length>127){
             return util.resUtilError(res, "描述字段过长");
         }
@@ -40,14 +39,18 @@ function uploadFiles(req, res) {
         let fileHashBuffer = wallet.rlphash(req.file.buffer);
         let fileHashHex = fileHashBuffer.toString("hex");
         console.log(fileHashHex,fileHashHex.length);
-        // 可能是异步的 考虑async
-        let isOk = wallet.verifyRlpHashBuffer(fileHashBuffer, sign, req.headers.pubkey);
-        if(!isOk){
-            return util.resUtilError(res, "签名校验失败");
-        }
-        // 可能是异步的 考虑async
-
+        let sign = req.body.sign || req.query.sign;
         async.waterfall([
+            function(cb) {
+                util.isVailidSign(sign, cb);
+            },
+            function(cb) {
+                let isOk = wallet.verifyRlpHashBuffer(fileHashBuffer, sign, req.headers.pubkey);
+                if(!isOk){
+                    return cb("签名校验失败");
+                }
+                cb();
+            },
             function(cb) {
                 files_ipfs.addFileToIpfs(req.file, cb);
             },

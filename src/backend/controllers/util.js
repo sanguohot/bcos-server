@@ -24,7 +24,16 @@ function resUtilError(res, msg) {
         message : msg || fcode.CODE_ERR_PARAM.message
     });
 }
-
+function isVailidSign(sign, cb) {
+    if(!sign){
+        return cb("缺少签名参数");
+    }
+    if(sign.length != 128){
+        return cb("签名长度错误");
+    }
+    cb();
+}
 exports.getDataForCns = getDataForCns;
 exports.resUtilError = resUtilError;
 exports.isValidAddress = isValidAddress;
+exports.isVailidSign = isVailidSign;

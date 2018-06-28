@@ -21,7 +21,7 @@ module.exports = function (router) {
         res.json({ message: 'Welcome to our api!' });
     });
     // 上传文件
-    router.post("/files", middle.signCheck, middle.addressCheck, files.uploadFiles);
+    router.post("/files", middle.addressCheck, files.uploadFiles);
     // 下载文件
     router.get("/files/:fileHash", middle.signCheck, middle.addressCheck, middle.fileHashCheck, files.downloadFile);
     // 签名列表

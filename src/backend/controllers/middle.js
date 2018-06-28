@@ -45,13 +45,12 @@ function fileHashCheck(req, res, next) {
 
 function signCheck(req, res, next) {
     let sign = req.body.sign || req.query.sign;
-    if(!sign){
-        return util.resUtilError(res, "缺少签名参数");
-    }
-    if(sign.length != 128){
-        return util.resUtilError(res, "签名长度错误");
-    }
-    next();
+    util.isVailidSign(sign, function (err) {
+        if(err){
+            return util.resUtilError(res, err.message || err);
+        }
+        next();
+    })
 }
 exports.addressCheck = addressCheck;
 exports.fileHashCheck = fileHashCheck;
