@@ -57,7 +57,7 @@ async function post(method,params) {
               response+=chunk;
           });  
           res.on('end', function (chunk) {
-              console.log("request finish", response);
+              console.info("请求完成", method, "===>", response);
               let responseObj = JSON.parse(response);
               if(responseObj.error){
                   return reject(responseObj.error);
@@ -70,7 +70,7 @@ async function post(method,params) {
       });  
         
       req.on('error', function (e) {  
-          console.error('problem with request: ' + e.message);
+          console.error('请求错误', method, "===>", e.message);
           reject(response);
       });  
         
