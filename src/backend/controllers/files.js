@@ -66,6 +66,8 @@ function uploadFiles(req, res) {
             ret.fileHash = fileHashHex;
             ret.code = 0;
             ret.message = fcode.CODE_SUCC.message;
+            ret.transactionHash = result.transactionHash;
+            ret.blockHash = result.blockHash;
             res.json(ret);
         });
     })
@@ -134,13 +136,15 @@ function addSign(req, res) {
         return util.resUtilError(res);
     }
     // 发送签名上链
-    files_bc.addSignToBlockChain(req.params.fileHash, req.headers.address, sign, (err) => {
+    files_bc.addSignToBlockChain(req.params.fileHash, req.headers.address, sign, (err, result) => {
         if(err){
             return util.resUtilError(res, err.message || err);
         }
         let ret = {};
         ret.code = 0;
         ret.message = fcode.CODE_SUCC.message;
+        ret.transactionHash = result.transactionHash;
+        ret.blockHash = result.blockHash;
         res.json(ret);
     });
 }

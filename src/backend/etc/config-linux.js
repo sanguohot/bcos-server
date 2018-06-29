@@ -9,5 +9,13 @@ exports.prop = {
     "file_split":"/",//***windows linux有分别
     "log_path":'/src/backend/log',//***log4js日志路径，windows linux有分别
     "log_level":"info",//***log4js日志级别，正式环境和测试环境有分别
+    "ipfs_endpoint":"10.6.250.50",
+    "ipfs_port":5001,
+    "ipfs_protocol":"http",
+    "minio_endpoint":"10.6.250.49",
+    "minio_port":9000,
+    "minio_secure":false,
+    "minio_access_key":"root",
+    "minio_secret_key":"12345678",
     "codeline":false//日志打印时，是否显示代码行数开关
 };

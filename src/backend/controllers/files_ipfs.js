@@ -1,7 +1,9 @@
+const os = require("os");
+const gprop = require('../etc/'+(os.platform()=="linux"?"config-linux":"config")).prop;
 let ipfsAPI = require('ipfs-api');
 let crypto = require('../controllers/crypto');
 // connect to ipfs daemon API server
-let ipfs = ipfsAPI('10.6.250.50', '5001', {protocol: 'http'});
+let ipfs = ipfsAPI(gprop.ipfs_endpoint, gprop.ipfs_port, {protocol: gprop.ipfs_protocol});
 
 function addFileToIpfs(file, cb) {
     if(!file || !file.buffer || !file.size || !file.buffer.length){
