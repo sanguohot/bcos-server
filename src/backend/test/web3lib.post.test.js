@@ -1,10 +1,10 @@
-let web3sync = require("../web3lib/web3sync");
+// let web3sync = require("../web3lib/web3sync");
 let web3post = require("../web3lib/post");
 
 let contractName = "FilesData";
 let contractVersion = "v1";
 let contractFunction = "getFileBasic";
-let contractParams = [""];
+let contractParams = ["77bdba1f57804db3b401dcd8a0b6594754fda0a53e751e8e914c9d0b93bac814"];
 let data = getDataForCns(contractName, contractVersion, contractFunction, contractParams);
 
 function getDataForCns(contractName, contractVersion, contractFunction, contractParams) {
