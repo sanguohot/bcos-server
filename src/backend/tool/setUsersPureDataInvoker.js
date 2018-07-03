@@ -14,5 +14,5 @@ web3sync.sendRawTransactionByNameService(web3config.account, web3config.privKey,
     .then(result => {
         console.log("succ", result, result.logs.length);
     }).catch(err => {
-        console.error("fail", err);
-    })
+    console.error("fail", err);
+})

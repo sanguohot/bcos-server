@@ -5,12 +5,13 @@
  * 
  * @date: 2018
  */
-
+const os = require("os");
+const gprop = require('../etc/'+(os.platform()=="linux"?"config-linux":"config")).prop;
 var proxy="http://10.6.250.56:8545";
 
-
+let output = gprop.server_path+"/"+"output";
 //console.log('RPC='+proxy);
-var output="./output/";
+// var output="./output/";
 //console.log('Ouputpath='+output);
 
 module.exports={

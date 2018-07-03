@@ -1,0 +1,64 @@
+Soc File :UsersPureData
+UsersPureData编译成功！
+发送交易成功: 0xca5a4517f1a271f9e81732201346446b8817845eb1db50c825d0975f260ae012
+UsersPureData合约地址 0xedbe22bc34285927ce4fdd2f6b09b2d85ea13cab
+
+[root@blockchainmedicalimaging57 tool]# babel-node deploy-suneee.js UsersController address 0xedbe22bc34285927ce4fdd2f6b09b2d85ea13cab    
+deploy.js  ........................Start........................
+Soc File :UsersController
+[ 'node',
+  '/opt/FISCO-BCOS-master/tool/deploy-suneee.js',
+  'UsersController',
+  'address',
+  '0xedbe22bc34285927ce4fdd2f6b09b2d85ea13cab' ]
+UsersController编译成功！
+发送交易成功: 0x3c33671d121c0570d878b6b883771b0ebe0b8ff18b70506848896ca10ed6ca26
+UsersController合约地址 0x517e34f22e17d9f53408a5ef0462b0707fc4d42b
+UsersController deploy success!
+ [WARNING] cns add operation failed , ====> contract => UsersController version => v2 is already exist. you can update it or change its version.
+[root@blockchainmedicalimaging57 tool]# babel-node cns_manager.js update UsersController
+cns_manager.js  ........................Begin........................
+ ====> Are you sure update the cns of the contract ?(Y/N)
+Y
+cns update operation => cns_name = UsersController/v2
+         cns_name =>UsersController/v2
+         contract =>UsersController
+         version  =>v2
+         address  =>0x517e34f22e17d9f53408a5ef0462b0707fc4d42b
+
+		 
+		 
+		 
+		 
+FilesPureData编译成功！
+发送交易成功: 0x78fda30a66d42b20a36bfd343e38d06ff9be777f7ffdf8269287bd355dafbd4d
+FilesPureData合约地址 0x0523f71e542bcb134aa9aecb496a3894225801c8
+FilesPureData deploy success!
+cns add operation => cns_name = FilesPureData/v2
+         cns_name =>FilesPureData/v2
+         contract =>FilesPureData
+         version  =>v2
+         address  =>0x0523f71e542bcb134aa9aecb496a3894225801c8
+		 
+
+[root@blockchainmedicalimaging57 tool]# babel-node deploy-suneee.js FilesController address 0x0523f71e542bcb134aa9aecb496a3894225801c8
+deploy.js  ........................Start........................
+Soc File :FilesController
+[ 'node',
+  '/opt/FISCO-BCOS-master/tool/deploy-suneee.js',
+  'FilesController',
+  'address',
+  '0x0523f71e542bcb134aa9aecb496a3894225801c8' ]
+FilesController编译成功！
+发送交易成功: 0x481c233649c1e16baf285f9e5061c1887694ce92a74833cb6458a4e1731afc94
+FilesController合约地址 0x15c273ab31641b188ea55631baba39257613a82b
+FilesController deploy success!
+cns add operation => cns_name = FilesController/v2
+         cns_name =>FilesController/v2
+         contract =>FilesController
+         version  =>v2
+         address  =>0x15c273ab31641b188ea55631baba39257613a82b
+		 
+部署完合约需要设置数据合约的调用者
+	修改文件setFilesPureDataInvoker.js和setUsersPureDataInvoker.js的参数
+	主要修改合约版本号和调用者地址
