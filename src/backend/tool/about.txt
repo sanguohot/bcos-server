@@ -1,21 +1,38 @@
+[root@blockchainmedicalimaging57 tool]# babel-node deploy-suneee.js UsersPureData
+deploy.js  ........................Start........................
 Soc File :UsersPureData
+[ 'node',
+  '/opt/FISCO-BCOS-master/tool/deploy-suneee.js',
+  'UsersPureData' ]
 UsersPureData编译成功！
-发送交易成功: 0xca5a4517f1a271f9e81732201346446b8817845eb1db50c825d0975f260ae012
-UsersPureData合约地址 0xedbe22bc34285927ce4fdd2f6b09b2d85ea13cab
+发送交易成功: 0xc9a568398c904d096c0cf19fe4f41f3aa137efab4aca351da3696060d09a7d81
+UsersPureData合约地址 0x63bb4b2015db2d9cdc9949d100aa651a283baa68
+UsersPureData deploy success!
 
-[root@blockchainmedicalimaging57 tool]# babel-node deploy-suneee.js UsersController address 0xedbe22bc34285927ce4fdd2f6b09b2d85ea13cab    
+[root@blockchainmedicalimaging57 tool]# babel-node cns_manager.js update UsersPureData
+cns_manager.js  ........................Begin........................
+ ====> Are you sure update the cns of the contract ?(Y/N)
+Y
+cns update operation => cns_name = UsersPureData/v2
+         cns_name =>UsersPureData/v2
+         contract =>UsersPureData
+         version  =>v2
+         address  =>0x63bb4b2015db2d9cdc9949d100aa651a283baa68
+		 
+[root@blockchainmedicalimaging57 tool]# babel-node deploy-suneee.js UsersController address 0x63bb4b2015db2d9cdc9949d100aa651a283baa68
 deploy.js  ........................Start........................
 Soc File :UsersController
 [ 'node',
   '/opt/FISCO-BCOS-master/tool/deploy-suneee.js',
   'UsersController',
   'address',
-  '0xedbe22bc34285927ce4fdd2f6b09b2d85ea13cab' ]
+  '0x63bb4b2015db2d9cdc9949d100aa651a283baa68' ]
 UsersController编译成功！
-发送交易成功: 0x3c33671d121c0570d878b6b883771b0ebe0b8ff18b70506848896ca10ed6ca26
-UsersController合约地址 0x517e34f22e17d9f53408a5ef0462b0707fc4d42b
+发送交易成功: 0x4f8a1e69dd85e5392019144bd76ff2512cb2ab99a1a3bd6b0dd406abba340065
+UsersController合约地址 0xc32a4c7d7c154cdf6041d3fc31321eee0cad9a16
 UsersController deploy success!
  [WARNING] cns add operation failed , ====> contract => UsersController version => v2 is already exist. you can update it or change its version.
+
 [root@blockchainmedicalimaging57 tool]# babel-node cns_manager.js update UsersController
 cns_manager.js  ........................Begin........................
  ====> Are you sure update the cns of the contract ?(Y/N)
@@ -24,40 +41,55 @@ cns update operation => cns_name = UsersController/v2
          cns_name =>UsersController/v2
          contract =>UsersController
          version  =>v2
-         address  =>0x517e34f22e17d9f53408a5ef0462b0707fc4d42b
-
+         address  =>0xc32a4c7d7c154cdf6041d3fc31321eee0cad9a16		 
 		 
 		 
 		 
-		 
+[root@blockchainmedicalimaging57 tool]# babel-node deploy-suneee.js FilesPureData
+deploy.js  ........................Start........................
+Soc File :FilesPureData
+[ 'node',
+  '/opt/FISCO-BCOS-master/tool/deploy-suneee.js',
+  'FilesPureData' ]
 FilesPureData编译成功！
-发送交易成功: 0x78fda30a66d42b20a36bfd343e38d06ff9be777f7ffdf8269287bd355dafbd4d
-FilesPureData合约地址 0x0523f71e542bcb134aa9aecb496a3894225801c8
+发送交易成功: 0xe182ba74a54f8d799beea012d03e4acd23469b0f17ae82460534fc5b0f651841
+FilesPureData合约地址 0x2b1913edb1828ff9fe3d87aad19b013cc9990b34
 FilesPureData deploy success!
-cns add operation => cns_name = FilesPureData/v2
+ [WARNING] cns add operation failed , ====> contract => FilesPureData version => v2 is already exist. you can update it or change its version.
+		 
+[root@blockchainmedicalimaging57 tool]# babel-node cns_manager.js update FilesPureData
+cns_manager.js  ........................Begin........................
+ ====> Are you sure update the cns of the contract ?(Y/N)
+Y
+cns update operation => cns_name = FilesPureData/v2
          cns_name =>FilesPureData/v2
          contract =>FilesPureData
          version  =>v2
-         address  =>0x0523f71e542bcb134aa9aecb496a3894225801c8
+         address  =>0x2b1913edb1828ff9fe3d87aad19b013cc9990b34
 		 
-
-[root@blockchainmedicalimaging57 tool]# babel-node deploy-suneee.js FilesController address 0x0523f71e542bcb134aa9aecb496a3894225801c8
+[root@blockchainmedicalimaging57 tool]# babel-node deploy-suneee.js FilesController address 0x2b1913edb1828ff9fe3d87aad19b013cc9990b34
 deploy.js  ........................Start........................
 Soc File :FilesController
 [ 'node',
   '/opt/FISCO-BCOS-master/tool/deploy-suneee.js',
   'FilesController',
   'address',
-  '0x0523f71e542bcb134aa9aecb496a3894225801c8' ]
+  '0x2b1913edb1828ff9fe3d87aad19b013cc9990b34' ]
 FilesController编译成功！
-发送交易成功: 0x481c233649c1e16baf285f9e5061c1887694ce92a74833cb6458a4e1731afc94
-FilesController合约地址 0x15c273ab31641b188ea55631baba39257613a82b
+发送交易成功: 0x9d6e3e726b97eb01383105eb21ff6ac57ad98da850e088409de12d492b7c85bd
+FilesController合约地址 0x9f95caaed68458c6a2d1380072548aa36d4d73b2
 FilesController deploy success!
-cns add operation => cns_name = FilesController/v2
+ [WARNING] cns add operation failed , ====> contract => FilesController version => v2 is already exist. you can update it or change its version.
+		 
+[root@blockchainmedicalimaging57 tool]# babel-node cns_manager.js update FilesController
+cns_manager.js  ........................Begin........................
+ ====> Are you sure update the cns of the contract ?(Y/N)
+Y
+cns update operation => cns_name = FilesController/v2
          cns_name =>FilesController/v2
          contract =>FilesController
          version  =>v2
-         address  =>0x15c273ab31641b188ea55631baba39257613a82b
+         address  =>0x9f95caaed68458c6a2d1380072548aa36d4d73b2
 		 
 部署完合约需要设置数据合约的调用者
 	修改文件setFilesPureDataInvoker.js和setUsersPureDataInvoker.js的参数

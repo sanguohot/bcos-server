@@ -55,7 +55,7 @@ function uploadFiles(req, res) {
                 files_ipfs.addFileToIpfs(req.file, cb);
             },
             function(ipfsHash, cb) {
-                files_bc.addFileToBlockChain(req.headers.address, sign, fileHashHex, ipfsHash, req.file.size, req.body.desc, cb);
+                files_bc.addFileToBlockChain(req.headers.userId, req.headers.prikey, sign, fileHashHex, ipfsHash, req.body.desc, cb);
             }
         ], function (err, result) {
             // result now equals 'done'
@@ -83,10 +83,10 @@ function downloadFile(req, res) {
     }
     async.waterfall([
         function(cb) {
-            files_bc.getFileBasicFromBlockChain(req.params.fileHash, cb);
+            files_bc.getFileBasicFromBlockChain(req.headers.userId, req.params.fileHash, cb);
         },
         function(fileObj, cb) {
-            files_ipfs.getFileFromIpfs(fileObj.filePath, cb);
+            files_ipfs.getFileFromIpfs(fileObj.ipfsHash, cb);
         }
     ], function (err, fileContent) {
         // result now equals 'done'
@@ -136,7 +136,7 @@ function addSign(req, res) {
         return util.resUtilError(res);
     }
     // 发送签名上链
-    files_bc.addSignToBlockChain(req.params.fileHash, req.headers.address, sign, (err, result) => {
+    files_bc.addSignToBlockChain(req.headers.userId, req.headers.prikey, req.params.fileHash, sign, (err, result) => {
         if(err){
             return util.resUtilError(res, err.message || err);
         }
@@ -158,16 +158,16 @@ function getSignList(req, res) {
     }
     async.waterfall([
         function(cb) {
-            files_bc.isAccountAddressExistOnBlockChain(req.params.fileHash, req.headers.address, cb);
+            files_bc.isAccountAddressExistOnBlockChain(req.params.fileHash, req.headers.userId, cb);
         },
         function (isExist, cb) {
             if(!isExist){
-                console.warn("非文件所有者签名者访问签名列表", req.headers.address, "===>", req.params.fileHash);
+                console.warn("非文件所有者签名者访问签名列表", req.headers.address, req.headers.userId, "===>", req.params.fileHash);
                 // 这里因为业务有需求先放开限制
                 // return cb("非文件所有者或者签名者无法访问");
             }
             // 这里从区块链上循环获取签名地址，最大循环数量为req.headers.fileSignSize
-            files_bc.getFileSignerAddressListFromBlockChain(req.params.fileHash, req.headers.fileSignSize, (err, list) => {
+            files_bc.getFileSignerAddressListFromBlockChain(req.headers.userId, req.params.fileHash, req.headers.fileSignSize, (err, list) => {
                 if(err){
                     return util.resUtilError(res, err.message || err);
                 }

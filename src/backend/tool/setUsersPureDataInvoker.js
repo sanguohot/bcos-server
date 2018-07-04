@@ -5,7 +5,7 @@ let web3config = require("../web3lib/config");
 let contractName = "UsersPureData";
 let contractVersion = "v2";
 let contractFunction = "setInvoker";
-let contractParams = ['0x517e34f22e17d9f53408a5ef0462b0707fc4d42b'];
+let contractParams = ['0xc32a4c7d7c154cdf6041d3fc31321eee0cad9a16'];
 // let ret = web3sync.callByNameService(contractName, contractFunction, contractVersion, contractParams);
 // console.log(ret);
 

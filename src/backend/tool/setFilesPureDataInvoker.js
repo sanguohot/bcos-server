@@ -5,7 +5,7 @@ let web3config = require("../web3lib/config");
 let contractName = "FilesPureData";
 let contractVersion = "v2";
 let contractFunction = "setInvoker";
-let contractParams = ['0x15c273ab31641b188ea55631baba39257613a82b'];
+let contractParams = ['0x9f95caaed68458c6a2d1380072548aa36d4d73b2'];
 // let ret = web3sync.callByNameService(contractName, contractFunction, contractVersion, contractParams);
 // console.log(ret);
 

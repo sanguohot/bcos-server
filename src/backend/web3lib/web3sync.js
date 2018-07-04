@@ -735,6 +735,7 @@ function callByNameService(contract, func, version, params) {
   };
 
   var call_result = web3.eth.call(postdata);
+  // console.log(call_result)
   return JSON.parse(call_result);
 }
 

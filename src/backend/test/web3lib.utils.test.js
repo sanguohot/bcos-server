@@ -16,3 +16,4 @@ let sign = wallet.sign(msg,prikey);
 // let isOk02 = wallet.verify(msg,sign,walletObj.pubkeyHex);
 
 console.log(walletObj, walletObj.addressHex.length);
+console.log(Buffer.from(walletObj.pubkeyCompressedHex,"utf8").length)

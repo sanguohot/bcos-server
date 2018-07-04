@@ -18,17 +18,18 @@ function addUser(req, res) {
     }
     let walletObj = wallet.createWallet();
     // 注册用户到链上
-    users_bc.addUserToBlockChain(walletObj.addressHex, walletObj.pubkeyHex, req.body.idCartNo, req.body.desc, (err, result) => {
+    users_bc.addUserToBlockChain(walletObj.addressHex, walletObj.addressCompressedHex, walletObj.prikeyHex, walletObj.pubkeyCompressedHex, req.body.idCartNo, req.body.desc, (err, result) => {
         if(err){
             return util.resUtilError(res, err.message || err);
         }
 
-        let key = "account-"+walletObj.addressHex;
+        let key = "account-"+walletObj.addressCompressedHex;
         let value = {
             // 备份链上唯一的数据
             "idCartNo":req.body.idCartNo,
             // 备份链上不存在的数据
             "prikey":walletObj.prikeyHex,
+            "address":walletObj.addressHex,
             // 备份链上交易hash
             "transactionHash":result.transactionHash,
             // 备份链上区块hash
@@ -37,15 +38,16 @@ function addUser(req, res) {
         // 加密敏感信息
         value.idCartNo = crypto.encryptByVersion(value.idCartNo);
         value.prikey = crypto.encryptByVersion(value.prikey);
+        value.address = crypto.encryptByVersion(value.address);
         value = JSON.stringify(value);
         minio.saveToMinio(null, key, value, function (err, result) {});
         // 返回响应
         let ret = {};
         ret.code = 0;
         ret.message = fcode.CODE_SUCC.message;
-        ret.pubkey = walletObj.pubkeyHex;
+        ret.pubkey = walletObj.pubkeyCompressedHex;
         ret.prikey = walletObj.prikeyHex;
-        ret.address = walletObj.addressHex;
+        ret.address = walletObj.addressCompressedHex;
         ret.transactionHash = result.transactionHash;
         ret.blockHash = result.blockHash;
         res.json(ret);
@@ -53,7 +55,7 @@ function addUser(req, res) {
 
     //保存账号信息到本地，加密保存
     // walletObj.body = req.body;
-    // let filePath = gprop.server_path+'/backup/'+walletObj.addressHex;
+    // let filePath = gprop.server_path+'/backup/'+walletObj.addressCompressedHex;
     // console.log(filePath)
     // fse.ensureFileSync(filePath);
     // let encryptData = crypto.encryptByVersion(JSON.stringify(walletObj));
@@ -72,7 +74,7 @@ function delUser(req, res) {
     if(!isOk){
         return util.resUtilError(res, "签名校验失败！");
     }
-    users_bc.delUserFromBlockChain(address, (err, result) => {
+    users_bc.delUserFromBlockChain(req.headers.userId, req.headers.prikey, (err, result) => {
         if(err){
             console.error(err);
             return util.resUtilError(res, err.message || err);

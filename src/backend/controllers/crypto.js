@@ -68,9 +68,14 @@ function encryptByVersion(data, version) {
 function decryptByVersion(data, version) {
     return actionByVersion("decrypt", data, version);
 }
+function md5Encrypt(data) {
+    let md5 = crypto.createHash('md5');
+    return md5.update(data).digest('hex');
+}
 exports.decrypt = decrypt;
 exports.encrypt = encrypt;
 exports.getDefaultKey = getDefaultKey;
 exports.getDefaultIv = getDefaultIv;
 exports.encryptByVersion = encryptByVersion;
 exports.decryptByVersion = decryptByVersion;
+exports.md5Encrypt = md5Encrypt;

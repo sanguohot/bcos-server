@@ -2,10 +2,11 @@ let web3post = require("../web3lib/post");
 let web3sync = require("../web3lib/web3sync");
 let async = require("async");
 let util = require("./util");
+let crypto = require("./crypto");
 let MAX_SIGN_SIZE = 3;
 
-function getSignNumFromBlockChain(fileHash, cb) {
-    getFileBasicFromBlockChain(fileHash, function (err, basic) {
+function getSignNumFromBlockChain(userId, fileHash, cb) {
+    getFileBasicFromBlockChain(userId, fileHash, function (err, basic) {
         if(err){
             return cb(err);
         }
@@ -16,11 +17,15 @@ function getSignNumFromBlockChain(fileHash, cb) {
     })
 }
 
-function isAccountAddressExistOnBlockChain(fileHash, address, cb) {
-    if(!address){
+function isAccountAddressExistOnBlockChain(fileHash, userId, cb) {
+    if(!userId){
         return cb("参数错误");
     }
-    let data = util.getDataForCns("FilesData", "v1", "isAccountAddressExist", [fileHash, address]);
+    let fileIdBytes32Array = util.stringToBytes32Array(crypto.md5Encrypt(fileHash),1);
+    if(!fileIdBytes32Array){
+        return cb("参数错误");
+    }
+    let data = util.getDataForCns(userId, "FilesController", "v2", "isUserIdExist", [fileIdBytes32Array]);
     web3post.post(data.method,data.params).then(result => {
         if(!result || !result[0]){
             return cb(0, false);
@@ -32,21 +37,25 @@ function isAccountAddressExistOnBlockChain(fileHash, address, cb) {
     })
 }
 
-function getFileBasicFromBlockChain(fileHash, cb) {
-    if(!fileHash){
+function getFileBasicFromBlockChain(userId, fileHash, cb) {
+    if(!fileHash || !userId){
         return cb("参数错误");
     }
-    let data = util.getDataForCns("FilesData", "v1", "getFileBasic", [fileHash]);
+    let fileIdBytes32Array = util.stringToBytes32Array(crypto.md5Encrypt(fileHash),1);
+    if(!fileIdBytes32Array){
+        return cb("参数错误");
+    }
+    let data = util.getDataForCns(userId, "FilesController", "v2", "getFileBasic", [fileIdBytes32Array]);
     web3post.post(data.method,data.params).then(result => {
         if(!result || result[0]==0 || !result[1] || !result[2] || !result[3] || !result[4]){
             return cb(0, null);
         }
         cb(0, {
             ownerAddress : result[0],
-            fileHash : result[1],
-            filePath : result[2],
+            fileHash : util.bytes32ArrayToString(result[1]),
+            ipfsHash : util.bytes32ArrayToString(result[2]),
             fileSignSize : result[3],
-            originalFileSize : result[4]
+            time : result[4]
         });
     }).catch(err => {
         console.error(err);
@@ -54,8 +63,12 @@ function getFileBasicFromBlockChain(fileHash, cb) {
     })
 }
 
-function getFileSignerAddressListFromBlockChain(fileHash, fileSignSize, cb) {
-    if(!fileHash || !fileSignSize){
+function getFileSignerAddressListFromBlockChain(userId, fileHash, fileSignSize, cb) {
+    if(!userId || !fileHash || !fileSignSize){
+        return cb("参数错误");
+    }
+    let fileIdBytes32Array = util.stringToBytes32Array(crypto.md5Encrypt(fileHash),1);
+    if(!fileIdBytes32Array){
         return cb("参数错误");
     }
     let count = 0;
@@ -63,7 +76,10 @@ function getFileSignerAddressListFromBlockChain(fileHash, fileSignSize, cb) {
     async.whilst(
         function() { return count < fileSignSize; },
         function(cb) {
-            let data = util.getDataForCns("FilesData", "v1", "getFileSignerAddressByIndex", [fileHash, count]);
+            let data = util.getDataForCns(userId, "FilesController", "v2", "getFileSignerAddressByIndex", [
+                fileIdBytes32Array,
+                count
+            ]);
             count++;
             web3post.post(data.method,data.params).then(result => {
                 if(!result || !result[0]){
@@ -85,19 +101,24 @@ function getFileSignerAddressListFromBlockChain(fileHash, fileSignSize, cb) {
     );
 }
 
-function addSignToBlockChain(fileHash, address, sign, cb) {
-    if(!fileHash || !sign || !address){
+function addSignToBlockChain(userId, prikey, fileHash, sign, cb) {
+    if(!userId || !prikey || !fileHash || !sign){
+        return cb("参数错误");
+    }
+    let signBytes32Array = util.stringToBytes32Array(sign, 4);
+    let fileIdBytes32Array = util.stringToBytes32Array(crypto.md5Encrypt(fileHash),1);
+    if(!signBytes32Array || !fileIdBytes32Array){
         return cb("参数错误");
     }
     async.waterfall([
         function(cb) {
-            getFileBasicFromBlockChain(fileHash, cb);
+            getFileBasicFromBlockChain(userId, fileHash, cb);
         },
         function (basic, cb) {
             if(!basic){
                 return cb("文件不存在，无法添加签名");
             }
-            getFileSignerAddressListFromBlockChain(fileHash, basic.fileSignSize, cb);
+            getFileSignerAddressListFromBlockChain(userId, fileHash, basic.fileSignSize, cb);
         },
         function(signList, cb) {
             if(!signList || !signList.length){
@@ -109,7 +130,7 @@ function addSignToBlockChain(fileHash, address, sign, cb) {
             let isExist = false;
             console.log(signList)
             signList.some((value, index, array) => {
-                if(address == value){
+                if(userId == value){
                     isExist = true;
                     return true;
                 }
@@ -121,7 +142,10 @@ function addSignToBlockChain(fileHash, address, sign, cb) {
             cb();
         },
         function (cb) {
-            web3sync.sendRawTransactionByNameService(null, null, "FilesData", "addFileSigner", "v1", [fileHash, address, sign]).then(result => {
+            web3sync.sendRawTransactionByNameService(userId, prikey, "FilesController", "addFileSigner", "v2", [
+                fileIdBytes32Array,
+                signBytes32Array
+            ]).then(result => {
                 // web3post.post(data.method,data.params).then(result => {
                 cb(0, result);
             }).catch(err => {
@@ -137,20 +161,34 @@ function addSignToBlockChain(fileHash, address, sign, cb) {
     });
 }
 
-function addFileToBlockChain(address, sign, fileHash, ipfsHash, fileSize, detail, cb) {
-    if(!address || !sign || !fileHash || !ipfsHash || !fileSize){
-        return cb(1);
+function addFileToBlockChain(userId, prikey, sign, fileHash, ipfsHash, detail, cb) {
+    if(!userId || !prikey || !sign || !fileHash || !ipfsHash){
+        return cb("参数错误");
     }
-
+    let signBytes32Array = util.stringToBytes32Array(sign, 4);
+    let fileHashBytes32Array = util.stringToBytes32Array(fileHash, 2);
+    let ipfsHashBytes32Array = util.stringToBytes32Array(ipfsHash, 2);
+    let detailBytes32Array = util.stringToBytes32Array(detail, 4);
+    let fileIdBytes32Array = util.stringToBytes32Array(crypto.md5Encrypt(fileHash),1);
+    if(!signBytes32Array || !fileHashBytes32Array || !ipfsHashBytes32Array || !detailBytes32Array || !fileIdBytes32Array){
+        return cb("参数错误");
+    }
     async.waterfall([
         function(cb) {
-            getFileBasicFromBlockChain(fileHash, cb);
+            getFileBasicFromBlockChain(userId, fileHash, cb);
         },
         function (basic, cb) {
             if(basic){
                 return cb("文件已存在，无法重复添加");
             }
-            web3sync.sendRawTransactionByNameService(null, null, "FilesData", "addFile", "v1", [address, sign, fileHash, ipfsHash, fileSize, detail]).then(result => {
+            web3sync.sendRawTransactionByNameService(userId, prikey, "FilesController", "addFile", "v2", [
+                fileIdBytes32Array,
+                signBytes32Array,
+                fileHashBytes32Array,
+                ipfsHashBytes32Array,
+                detailBytes32Array,
+                new Date().getTime()
+            ]).then(result => {
                 // web3post.post(data.method,data.params).then(result => {
                 cb(0, result);
             }).catch(err => {
