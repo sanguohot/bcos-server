@@ -17,5 +17,11 @@ exports.prop = {
     "minio_secure":false,
     "minio_access_key":"root",
     "minio_secret_key":"12345678",
+    "db_host":"10.6.250.53",
+    "db_port":3306,
+    "db_pool":50,
+    "db_name":"fin",
+    "db_user":"root",
+    "db_password":"yaojinchao",
 	"codeline":true//日志打印时，是否显示代码行数开关
 };

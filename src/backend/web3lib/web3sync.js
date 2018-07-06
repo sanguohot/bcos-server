@@ -15,6 +15,7 @@ const fs=require('fs');
 const execSync =require('child_process').execSync;
 const coder = require('./codeUtils');
 const util = require('../controllers/util');
+const operationLog = require('../controllers/operation_log');
 var config=require('./config');
 
 /*
@@ -779,6 +780,17 @@ async function sendRawTransactionByNameService(account, privateKey, contract, fu
                     }
                     console.info("交易成功", util.getInvokeMethod(null, namecallparams), "===>", receipt);
 					resolve(receipt);
+                    operationLog.saveLogToDb(
+                        receipt.transactionHash,
+                        receipt.blockHash,
+                        account,
+                        contract,
+                        version,
+                        func,
+                        JSON.stringify(params),
+                        JSON.stringify(receipt),
+                        (err, results, fields) => {if(err) console.error(err)}
+                    );
 				});
 				//resolve(address);
 			}

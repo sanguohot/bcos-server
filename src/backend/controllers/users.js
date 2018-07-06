@@ -1,4 +1,3 @@
-const gprop = require('../etc/config').prop;
 let fcode = require("./code");
 let users_bc = require("./users_bc");
 let util = require("./util");
